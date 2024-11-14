@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1b4b">
+    <meta name="theme-color" content="#e8e8ff">
+    <meta name="color-scheme" content="light">
+    <title>Weather App</title>
+
+   <!--FontAwesome-->
+    <link href="https://pro.fontawesome.com/releases/v6.0.0-beta1/css/all.css" rel="stylesheet">
+   <!--Boxicons-->
+    <link href="https://unpkg.com/boxicons@2.1.4/dist/boxicons.min.css" rel="stylesheet">
+
+    <!---Styles-->
+    <link rel="stylesheet" href="styles.css">
+
+    <!--Chart.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <!--Script-->
+    <script type="module" src="script.js"></script>
+</head> 
+
+
+<body>
+    <div class="container">
+        <!---------------------------------------------------SLIDEBAR----------------------------------------------------------->
+        <nav class="sidebar">
+            <!------------------------USER PROFILE-------------------------->
+            <div class="user-profile">
+                <img src="profile.png">
+                <div class="user-info">
+                    <h3>Pauline ZHOU</h3>
+                    <small>Administrator</small>
+                </div>
+            </div>
+            <hr><br> 
+            <!-----------------------NAVIGATION MENU------------------------->
+            <ul>
+                <li>
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Home Page</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-page="data">
+                        <i class="fas fa-database"></i>
+                        <span>Data Visualization</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-page="evolution">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Graphical Evolution</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-page="about">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-----------------------------------------------------TOP CONTENT------------------------------------------------------------->
+        <main class="main-content">
+            <div class="header">
+                <!------------------------Title-------------------------->
+                <h1>Dashboard</h1>
+                <div class="weather-input">
+                    <!------------------------Button Search-------------------------->
+                    <input type="text" name="city" id="city_input" placeholder="Enter city name">
+                    <button type="button" id="searchBtn">
+                        <i class="fa-regular fa-search"></i> Search
+                    </button>
+                    <!------------------------Button Current Location-------------------------->
+                    <button type="button" id="locationBtn">
+                        <i class="bx bx-target-lock"></i> Current location
+                    </button>
+                </div>
+            </div>
+
+            <!-------------------------------------------------- LEFT CONTENT ----------------------------------------------------------->
+            <div class="page" id="dashboard">
+                <div class="weather-data">
+                    <div class="weather-left">
+                        <!-----------------------CURRENT WEATHER CARD------------------------->
+                        <div class="card">
+                            <div class="current-weather">
+                                <div class="details">
+                                    <h1 id="tempValue">Chargement...</h1>
+                                    <p>Current temperature</p>
+                                </div>
+                                
+                                <!-----------------------WEATHER ICON------------------------->
+                                <div class="weather-icon">
+                                    <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="weather">
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="card-footer">
+                                <!------------------------Date-------------------------->
+                                <p><i class="fa-light fa-calendar"style="margin-right: 10px;"></i><span id ="date"> </span></p>
+                                <!------------------------City-------------------------->
+                                <p><i class="fa-light fa-location-dot"style="margin-right: 10px;"></i> <span id="cityName">Busan</span></p>
+                            </div>
+                        </div>
+                        <!------------------------Weather Stats-------------------------->
+                        <div class="weather-stats">
+                            <!----- Humidity Card ------->
+                            <div class="weather-card">
+                                <div class="card-item">
+                                    <i class="fa-light fa-droplet fa-2x"></i>
+                                    <h3 id="humidityValue">chargement ...</h3>
+                                    <p>Humidity</p>
+                                </div>
+                            </div>
+                            <!-- Wind Card -->
+                            <div class="weather-card">
+                                <div class="card-item">
+                                    <i class="fa-light fa-wind fa-2x"></i>
+                                    <h3 id="windValue">chargement ...</h3>
+                                    <p>Wind Speed</p>
+                                </div>
+                            </div>
+                            <!----- Rain Card ------->
+                            <div class="weather-card">
+                                <div class="card-item">
+                                    <i class="fa-light fa-cloud-rain fa-2x"></i>
+                                    <h3 id="rainValue">chargement ...</h3>
+                                    <p>Rain</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-----------------------5 DAYS FORECAST CARD------------------------->
+                    <div class="forecast-container">
+                        <div class="card">
+                            <h1>5 days forecast</h1>
+                            <div class="days-forecast">
+                                <!------------------------1st Forecast Item-------------------------->
+                                <div class="forecast-item">
+                                    <div class="icon-wrapper">
+                                        <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="weather">
+                                        <span>___°C</span>
+                                    </div>
+                                    <p>______</p>
+                                    <p>______</p>
+                                </div>
+                               
+                                <!------------------------2nd Forecast Item-------------------------->
+                                <div class="forecast-item">
+                                    <div class="icon-wrapper">
+                                        <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="weather">
+                                        <span>___°C</span>
+                                    </div>
+                                    <p>______</p>
+                                    <p>______</p>
+                                </div>
+                                <!------------------------3rd Forecast Item-------------------------->
+                                <div class="forecast-item">
+                                    <div class="icon-wrapper">
+                                        <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="weather">
+                                        <span>___°C</span>
+                                    </div>
+                                    <p>______</p>
+                                    <p>______</p>
+                                </div>
+                                <!------------------------4th Forecast Item-------------------------->
+                                <div class="forecast-item">
+                                    <div class="icon-wrapper">
+                                        <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="weather">
+                                        <span>___°C</span>
+                                    </div>
+                                    <p>______</p>
+                                    <p>______</p>
+                                </div>
+                                <!------------------------5th Forecast Item-------------------------->
+                                <div class="forecast-item">
+                                    <div class="icon-wrapper">
+                                        <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="weather">
+                                        <span>___°C</span>
+                                    </div>
+                                    <p>______</p>
+                                    <p>______</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                <!-------------------------------------------- RIGHT CONTENT----------------------------------------------------------->
+                <div class="weather-right">
+                    <h2>Today's Highlights</h2>
+                    <div class="highlights">
+                        <!------------------------Air Quality Card-------------------------->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="air-title">Air Quality Index</h3>
+                                <h4 id="airIndex" class="air-index">____</h4>
+                            </div>
+                            <br>
+                            <!------------------------AIR QUALITY INDICES-------------------------->
+                            <div class="air-indices">
+                                <!-----PM2.5---->
+                                <div class="aqi-items">
+                                    <p>PM2.5</p>
+                                    <h3 id="PM2_5Value">....µg/m³</h3>
+                                </div>
+                                <!-----PM10---->
+                                <div class="aqi-items">
+                                    <p>PM10</p>
+                                    <h3 id="PM10Value">....µg/m³</h3>
+                                </div>
+                                <!-----NOx---->
+                                <div class="aqi-items">
+                                    <p>NOx</p>
+                                    <h3 id="NOxValue">....µg/m³</h3>
+                                </div>
+                                <!-----NH3---->
+                                <div class="aqi-items">
+                                    <p>NH3</p>
+                                    <h3 id="NH3Value">....µg/m³</h3>
+                                </div>
+                                <!-----CO---->
+                                <div class="aqi-items">
+                                    <p>CO</p>
+                                    <h3 id="COValue">....ppm</h3>
+                                </div>
+                                <!-----SO2---->
+                                <div class="aqi-items">
+                                    <p>SO2</p>
+                                    <h3 id="SO2Value">....µg/m³</h3>
+                                </div>
+                              
+                               
+                            </div>
+                        </div>
+
+                        <div class="small-cards">
+                            <!------------------------Sunrise & Sunset Card-------------------------->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Sunrise & Sunset</h3>
+                                </div>  
+                                <div class="sunrise-sunset">
+                                    <!-----------Sunrise----------->
+                                    <div class="item">
+                                        <div class="icon">
+                                            <i class="fa-light fa-sunrise fa-4x"></i>
+                                        </div>
+                                        <div>
+                                            <p>Sunrise</p>
+                                            <h2 id="sunriseValue">______</h2>
+                                        </div>
+                                    </div>
+                                    <!-----------Sunset----------->
+                                    <div class="item">
+                                        <div class="icon">
+                                            <i class="fa-light fa-sunset fa-4x"></i>
+                                        </div>
+                                        <div>
+                                            <p>Sunset</p>
+                                            <h2 id="sunsetValue">______</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-------------------------------------------------- Page Data ----------------------------------------------------------->
+          
+        <div class="page" id="data">
+            <div class="data-container">
+                <h2>Data Visualization</h2>
+                
+                <!------------------------Temperature & Humidity Trend-------------------------->
+                <div class="chart-row">
+                    <div class="chart-card">
+                        <h3>Temperature & Humidity Trend</h3>
+                        <div class="chart-container">
+                            <canvas id="tempHumidityTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!------------------------Pollutants Levels-------------------------->
+                <div class="chart-column">
+                    <div class="chart-card">
+                        <h3>Pollutants Levels</h3>
+                        <div class="chart-container">
+                            <canvas id="pollutantsLevelChart"></canvas>
+                        </div>
+                    </div>
+                <!------------------------Pollutants Distribution-------------------------->
+                
+                    <div class="chart-card">
+                        <h3>Pollutants Distribution</h3>
+                        <div class="donut-chart-container">
+                            <canvas id="pollutantsDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+            <!-------------------------------------------------- Page Evolution ----------------------------------------------------------->
+            <div class="page" id="evolution">
+                <div class="evolution-container">
+                    <div class="period-selector">
+                        <button class="period-btn active" data-period="week">1 Week</button>
+                        <button class="period-btn" data-period="month">1 Month</button>
+                        <button class="period-btn" data-period="sixMonths">6 Months</button>
+                        <button class="period-btn" data-period="year">1 Year</button>
+                    </div>
+                    
+                    <div class="charts-grid">
+                        <!----------------------Temperature Chart------------------------>
+                        <div class="chart-card">
+                            <h3>Temperature</h3>
+                            <canvas id="tempChart"></canvas>
+                            </div>
+                        <!------------------------Humidity Chart-------------------------->
+                        <div class="chart-card">
+                            <h3>Humidity</h3>
+                            <canvas id="humidityChart"></canvas>
+                        </div>
+                        <!--------------------Air Quality Index Chart---------------------->
+                        <div class="chart-card">
+                            <h3>Air Quality Index</h3>
+                            <canvas id="aqiChart"></canvas>
+                        </div>
+                        <!-----------------------Precipitation Chart----------------------->
+                        <div class="chart-card">
+                            <h3>Wind Speed</h3>
+                            <canvas id="windSpeed"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-------------------------------------------------- Page About ----------------------------------------------------------->
+          
+<div class="page" id="about">
+    <div class="about-container">
+        <div class="about-header">
+            <h1>About Us</h1>
+            <p class="subtitle">a weather page which provides real-time weather data and air quality information</p>
+        </div>
+
+        <div class="about-grid">
+            <!-- Mission -->
+            <div class="about-card">
+                <div class="icon-wrapper">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Our Mission</h3>
+                <p>Provide accurate and real-time weather data, while raising awareness of air quality for a healthier future.</p>
+            </div>
+
+            <!-- Vision -->
+            <div class="about-card">
+                <div class="icon-wrapper">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>Our Vision</h3>
+                <p>Become the reference in meteorological surveillance and air quality, accessible to all.</p>
+            </div>
+
+            <!-- Fonctionnalités -->
+            <div class="about-card features">
+                <div class="icon-wrapper">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Key Features</h3>
+                <ul>
+                    <li><i class="fas fa-check"></i> Real-time weather data</li>
+                    <li><i class="fas fa-check"></i> Air quality monitoring</li>
+                    <li><i class="fas fa-check"></i> 5-day forecasts</li>
+                    <li><i class="fas fa-check"></i> Interactive visualizations</li>
+                </ul>
+            </div>
+
+            <!-- Technologies -->
+            <div class="about-card">
+                <div class="icon-wrapper">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Technologies Used</h3>
+                <div class="tech-stack">
+                    <span>HTML5</span>
+                    <span>CSS3</span>
+                    <span>JavaScript</span>
+                    <span>Chart.js</span>
+                    <span>API OpenWeather</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <p><i class="fas fa-envelope"></i> contact@weatherapp.com</p>
+                <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+                <p><i class="fas fa-map-marker-alt"></i> Paris, France</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
