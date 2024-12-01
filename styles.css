@@ -1,17 +1,19 @@
 /* --------------------------------------Variables-------------------------------------- */
 :root {
-    --bg-color1: #e8e8ff;  /* Pastel bleu très clair pour le fond */
-    --bg-color2: #f0e6ff;  /* Pastel violet clair pour les cartes */
-    --text-color: #2d2d5f; /* Bleu foncé pour le texte */
-    --accent-color: #ffb5d8; /* Rose pastel */
-    --gradient-1: linear-gradient(to right, #e6e9ff, #f0e6ff); /* Dégradé pastel bleu-violet */
-    --gradient-2: linear-gradient(to right, #ffb5d8, #ffd6e7); /* Dégradé pastel rose */
+    --bg-color1: #e8e8ff;  /* fond*/
+    --bg-color2: #f0e6ff;  /* card */
+    --text-color: #2d2d5f; /*text */
+    --accent-color: #ffb5d8;
+     /* Degraded color */
+    --gradient-1: linear-gradient(to right, #e6e9ff, #f0e6ff);
+    --gradient-2: linear-gradient(to right, #ffb5d8, #ffd6e7); 
     --card-bg: rgba(255, 255, 255, 0.7); /* Fond semi-transparent pour les cartes */
-    --aqi-1: #98FB98; /* Pastel vert */
-    --aqi-2: #B0E0E6; /* Pastel bleu clair */
-    --aqi-3: #FFE4B5; /* Pastel orange clair */
-    --aqi-4: #FFB6C1; /* Pastel rose */
-    --aqi-5: #FFA07A; /* Pastel orange */
+    /* Air quality index color */
+    --aqi-1: #98FB98; 
+    --aqi-2: #B0E0E6; 
+    --aqi-3: #FFE4B5; 
+    --aqi-4: #FFB6C1;
+    --aqi-5: #FFA07A; 
 }
 
 /* --------------------------------------General-------------------------------------- */
@@ -43,8 +45,8 @@ body{
         grid-template-columns: 1fr;
     }
 }
-/* --------------------------------------Sidebar-------------------------------------- */
-.sidebar {
+/* --------------------------------------Slidebar-------------------------------------- */
+.slidebar {
     background: var(--gradient-1);
     border-radius: 15px;
     padding: 20px;
@@ -140,6 +142,44 @@ body{
 .weather-info-cards .card {
     flex: 1;
 }
+
+/* --------------------------------------Footer-------------------------------------- */
+footer {
+    background-color: var(--gradient-1);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px 10px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  footer p {
+    margin: 5px 0;
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0 0;
+  }
+  
+  .footer-links li {
+    display: inline;
+  }
+  
+  .footer-links a {
+    color: #454c89;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
 /* --------------------------------------Dashboard-------------------------------------- */
 #dashboard {
     display: block;
@@ -148,7 +188,6 @@ body{
 .main-content {
     flex: 1;
 }
-
 /* ----------------------- Bar Header ---------------------------- */
 .header{
     z-index: 1000; /* to be sure the header is always on top */
@@ -821,8 +860,6 @@ canvas {
         font-size: 0.9em;
     }
 }
-
-
 
 
 .contact-section {
