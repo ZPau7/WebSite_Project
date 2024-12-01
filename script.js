@@ -1,32 +1,33 @@
-let currentCITY = 'Busan';
-// ------------------------------------------- API OPENWEATHER -------------------------------------------------------
+let currentCITY = 'Busan'; //City by default
+// ------------------------------------------------------- API OPENWEATHER -------------------------------------------------------------------------
 const API_KEY = '44e41eeffeda3b22eca673b0e45c963b';
  
-
-
 // ------------------------ Function to fetch data from the API WEATHER ------------------------
 async function fetchData() {
+
     console.log('fetchData() appelée avec la ville:', currentCITY); // Debug
+    //making a url to get the weather data, with the city name and the API key
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${currentCITY}&appid=${API_KEY}&units=metric`;
 
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
+    //start of the try block
+    try { 
+        const response = await fetch(url); //await is used to wait for the response from the fetch function
+        const data = await response.json(); //await is used to wait for the response to be converted to JSON
 
-        // Temperature and Humidity Sunrise and Sunset
+        // Extracting the data from the API
         const temperature = data.main.temp;
         const humidity = data.main.humidity;
         const windSpeed = data.wind.speed;
-        const sunrise = new Date(data.sys.sunrise * 1000).toLocaleTimeString();
-        const sunset = new Date(data.sys.sunset * 1000).toLocaleTimeString();
+        const sunrise = new Date(data.sys.sunrise* 1000).toLocaleTimeString(); //convert seconds to milliseconds
+        const sunset = new Date(data.sys.sunset* 1000).toLocaleTimeString(); //convert seconds to milliseconds
 
         // Get the weather icon
-        const weatherIcon = data.weather[0].icon;
+        const weatherIcon = data.weather[0].icon; //icon is the first element of the weather array
 
         // Rain
-        const rain = data.rain ? data.rain['1h'] : 0;
+        const rain = data.rain ? data.rain['1h'] : 0; //if there is rain, get the rain intensity, otherwise 0
 
-        // Update the user interface
+        // Update the HTML elements with the data retrieved from the API
         document.getElementById('tempValue').textContent = `${temperature} °C`;
         document.getElementById('humidityValue').textContent = `${humidity} %`;
         document.getElementById('sunriseValue').textContent = `${sunrise}`;
@@ -34,8 +35,9 @@ async function fetchData() {
         document.getElementById('windValue').textContent = `${windSpeed} m/s`;
         document.getElementById('rainValue').textContent = `${rain} mm`;
 
-        // Update the weather icon
+        // Update the weather icon by changing the src of the img element
         document.querySelector('.weather-icon img').src = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
+
     } catch (error) {
         console.error('Error getting data:', error);
         //alert('Error getting data.');
@@ -43,19 +45,25 @@ async function fetchData() {
 }
 
 
-//------------------------------------------- FUNCTION API GEOCODING ---------------------------------------------------------------
+//------------------------------------------------------ FUNCTION API GEOCODING -------------------------------------------------------------------------------
 async function getCoordinates() {
     console.log('getCoordinates - currentCity:', currentCITY);  // Debug
+    //making a url to get the coordinates of the city, with the city name and the API key
     const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${currentCITY}&limit=1&appid=${API_KEY}`;
+
+    //start of the try block
     try {
-        const response = await fetch(geoUrl);
-        const data = await response.json();
+        const response = await fetch(geoUrl); //await is used to wait for the response from the fetch function  
+        const data = await response.json(); //await is used to wait for the response to be converted to JSON
+
+        //if the city is found, return the coordinates
         if (data.length > 0) {
             return {
-                lat: data[0].lat,
-                lon: data[0].lon
+                lat: data[0].lat, 
+                lon: data[0].lon 
             };
         }
+        //if the city is not found, throw an error
         throw new Error("City not found");
     } catch (error) {
         console.error("Error getting coordinates:", error);
@@ -63,33 +71,39 @@ async function getCoordinates() {
     }
 }
 
-//------------------------------------------- FUNCTION API AIR QUALITY ---------------------------------------------------------------
+//---------------------------------------------------------- FUNCTION API AIR QUALITY ---------------------------------------------------------------
 async function fetchAirQualityData() {
+    console.log('fetchAirQualityData - currentCity:', currentCITY);  // Debug
+    //start of the try block
     try {
-        console.log('fetchAirQualityData - currentCity:', currentCITY);  // Debug
         // Get coordinates
-        const coords = await getCoordinates();
+        const coords = await getCoordinates(); //await is used to wait for the coordinates to be retrieved
         
-        // Use coordinates to get air quality data
+        // making a url to get the air quality data, with the coordinates and the API key
+        // we can't get the air quality data with the city name because the API doesn't support it
         const url2 = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}`;
         const response = await fetch(url2);
         const data = await response.json();
 
         // Check if data is available
-        if (!data.list || !data.list[0]) {
+        //list is a array which contains the air quality data, data.list[0] is the most recent data
+        if (!data.list || !data.list[0]) { //if the list is empty or the first element is empty, throw an error
             throw new Error("Data not available");
         }
 
-        const airQuality = data.list[0].components;
-        const aqi = data.list[0].main.aqi;
-       
+        const airQuality = data.list[0].components; //level of air pollutants (PM2.5, PM10, NO2, NH3, SO2, CO)
+        const aqi = data.list[0].main.aqi; //air quality index (1: Good, 2: Fair, 3: Moderate, 4: Poor, 5: Very Poor)
+
+        // Update the HTML elements with the data retrieved from the API
+        //if the data is not available, display 0
         document.getElementById('PM2_5Value').textContent = `${airQuality.pm2_5||0} µg/m³`;
         document.getElementById('PM10Value').textContent = `${airQuality.pm10||0} µg/m³`;
         document.getElementById('NOxValue').textContent = `${airQuality.no2||0} µg/m³`;
         document.getElementById('NH3Value').textContent = `${airQuality.nh3||0} µg/m³`;
         document.getElementById('SO2Value').textContent = `${airQuality.so2||0} µg/m³`;
         document.getElementById('COValue').textContent = `${airQuality.co||0} µg/m³`;
-         
+
+        //update the AQI status
         updateAQIStatus(aqi);
     } catch (error) {
         console.error('Erreur de récupération des données:', error);
@@ -97,14 +111,16 @@ async function fetchAirQualityData() {
     }   
 }
 
-//------------------------------------------- FUNCTION UPDATE AQI STATUS ---------------------------------------------------------------
+//----------------------------------------------------------------- FUNCTION UPDATE AQI STATUS -----------------------------------------------------------------
 function updateAQIStatus(aqi) {
+    //select the HTML element which contains the AQI status
     const aqiElement = document.querySelector('.air-index');
     
     // Remove all existing aqi classes
     aqiElement.classList.remove('aqi-1', 'aqi-2', 'aqi-3', 'aqi-4', 'aqi-5');
     
     // Update the AQI status
+    // 12345 are the AQI values get from the API
     switch(aqi) {
         case 1://GOOD
             aqiElement.textContent = "Good";
@@ -131,25 +147,26 @@ function updateAQIStatus(aqi) {
     }
 }
 
-// ------------------------------------ Function to fetch data from the API FORECAST ------------------------------------
+// ----------------------------------------------------------- Function to fetch data from the API FORECAST ------------------------------------------------------------
 async function getFiveDayForecast() {
     try {
         // Get the coordinates of the city
         const coords = await getCoordinates();
         
-        // Call the API for the 5 days forecast
+        // making a url to get the 5 days forecast, with the coordinates and the API key
         const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}&units=metric`;
         const response = await fetch(forecastUrl);
         const data = await response.json();
 
         // Filter to have only one forecast per day
+        // Api return 3h forecast, we need to have only one forecast per day
         const dailyForecasts = {};
         
         data.list.forEach(forecast => {
-            const date = new Date(forecast.dt * 1000);
-            const day = date.toISOString().split('T')[0];
+            const date = new Date(forecast.dt * 1000); //convert seconds to milliseconds
+            const day = date.toISOString().split('T')[0]; //get the date without the time
             
-            if (!dailyForecasts[day]) {
+            if (!dailyForecasts[day]) { //if the day is not in the dailyForecasts object, add it
                 dailyForecasts[day] = {
                     date: date,
                     temp: Math.round(forecast.main.temp),
@@ -188,15 +205,22 @@ async function getFiveDayForecast() {
     }
 }
 
+//----------------------------------------------------------------- Data Visualization Page ---------------------------------------------------------------------------------
+
 //-------------------------------------------- FUNCTION CREATE CHART ---------------------------------------------------------------
+let tempHumidityChart = null;
+let pollutantsLevelChart = null;
+let pollutantsDistributionChart = null;
+
 // Graphique température/humidité
 function createTempHumidityChart(weatherData) {
-    // Destroy the existing chart if it exists
-    if (window.tempHumidityChart) {
-        window.tempHumidityChart.destroy();
-    }
+
     const ctx = document.getElementById('tempHumidityTrendChart').getContext('2d');
-    
+    // Destroy the existing chart if it exists
+    if (tempHumidityChart) {
+        tempHumidityChart.destroy();
+    }
+
     const next24Hours = weatherData.list.slice(0, 8); // Prochaines 24h (8 points de 3h)
     
     const labels = next24Hours.map(item => 
@@ -205,7 +229,7 @@ function createTempHumidityChart(weatherData) {
     const temperatures = next24Hours.map(item => item.main.temp);
     const humidity = next24Hours.map(item => item.main.humidity);
 
-    new Chart(ctx, {
+    tempHumidityChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -246,12 +270,17 @@ function createTempHumidityChart(weatherData) {
     });
 }
 
-//-------------------------------------------- FUNCTION CREATE POLLUTANTS LEVEL CHART ---------------------------------------------------------------
+//----------------------------------------------------- FUNCTION CREATE POLLUTANTS LEVEL CHART ---------------------------------------------------------------
 function createPollutantsLevelChart(pollutionData) {
     const ctx = document.getElementById('pollutantsLevelChart').getContext('2d');
+
+    if (pollutantsLevelChart) {
+        pollutantsLevelChart.destroy();
+    }
+
     const components = pollutionData.list[0].components;
 
-    new Chart(ctx, {
+    pollutantsLevelChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['PM2.5', 'PM10', 'NO2', 'NH3', 'SO2', 'CO'],
@@ -287,12 +316,17 @@ function createPollutantsLevelChart(pollutionData) {
     });
 }
 
-//-------------------------------------------- FUNCTION CREATE POLLUTANTS DISTRIBUTION CHART ---------------------------------------------------------------
+//-------------------------------------------------------- FUNCTION CREATE POLLUTANTS DISTRIBUTION CHART ---------------------------------------------------------------
 function createPollutantsDistributionChart(pollutionData) {
     const ctx = document.getElementById('pollutantsDistributionChart').getContext('2d');
+
+    if (pollutantsDistributionChart) {
+        pollutantsDistributionChart.destroy();
+    }
+
     const components = pollutionData.list[0].components;
-    
     const total = Object.values(components).reduce((a, b) => a + b, 0);
+
     const data = {
         pm2_5: (components.pm2_5 / total) * 100,
         pm10: (components.pm10 / total) * 100,
@@ -302,7 +336,7 @@ function createPollutantsDistributionChart(pollutionData) {
         co: (components.co / total) * 100
     };
 
-    new Chart(ctx, {
+    pollutantsDistributionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['PM2.5', 'PM10', 'NO2', 'NH3', 'SO2', 'CO'],
@@ -331,7 +365,8 @@ function createPollutantsDistributionChart(pollutionData) {
         }
     });
 }
-//-------------------------------------------- FUNCTION CREATE CHART ---------------------------------------------------------------    
+
+//------------------------------------------------------------ FUNCTION CREATE CHART ---------------------------------------------------------------    
 async function createCharts() {
     
     try {
@@ -361,6 +396,228 @@ async function createCharts() {
     }
 }
 
+//---------------------------------------------------------------- GRAPHICAL EVOLUTION PAGE -------------------------------------------------------------------
+let tempChart = null;
+let humidityChart = null;
+let aqiChart = null;
+let windChart = null;
+
+function createTemperatureChart(labels, data) {
+    const ctx = document.getElementById('tempChart').getContext('2d');
+    
+    // Destroy graph if existed
+    if (tempChart) {
+        tempChart.destroy();
+    }
+    
+    tempChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Temperature (°C)',
+                data: data.map((value, index) => ({
+                    x: labels[index],
+                    y: value
+                })),
+                borderColor: '#FF6384',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM D'
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createHumidityChart(labels, data) {
+    const ctx = document.getElementById('humidityChart').getContext('2d');
+    
+    if (humidityChart) {
+        humidityChart.destroy();
+    }
+    
+    humidityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Humidity (%)',
+                data: data.map((value, index) => ({
+                    x: labels[index],
+                    y: value
+                })),
+                borderColor: '#36A2EB',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM D'
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createWindSpeedChart(labels, data) {
+    const ctx = document.getElementById('windSpeed').getContext('2d');
+    
+    if (windChart) {
+        windChart.destroy();
+    }
+    
+    windChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Wind Speed (m/s)',
+                data: data.map((value, index) => ({
+                    x: labels[index],
+                    y: value
+                })),
+                borderColor: '#FFCE56',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM D'
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+async function createAQIChart(coords) {
+    const ctx = document.getElementById('aqiChart').getContext('2d');
+    
+    // Destroy the graph if it's already existed
+    if (aqiChart) {
+        aqiChart.destroy();
+    }
+    
+    try {
+        const airQualityUrl = `https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}`;
+        const response = await fetch(airQualityUrl);
+        const data = await response.json();
+        
+        const timestamps = data.list.map(item => new Date(item.dt * 1000));
+        const aqi = data.list.map(item => item.main.aqi);
+
+        aqiChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Air Quality Index',
+                    data: aqi.map((value, index) => ({
+                        x: timestamps[index],
+                        y: value
+                    })),
+                    borderColor: '#4BC0C0',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            displayFormats: {
+                                day: 'MMM D'
+                            }
+                        }
+                    },
+                    y: {
+                        min: 1,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Erreur lors de la création du graphique AQI:', error);
+    }
+}
+
+
+// Fonction DESTROY
+function destroyAllCharts() {
+    if (tempChart) tempChart.destroy();
+    if (humidityChart) humidityChart.destroy();
+    if (aqiChart) aqiChart.destroy();
+    if (windChart) windChart.destroy();
+}
+
+
+async function createEvolutionCharts() {
+    try {
+        // Détruire les graphiques existants avant d'en créer de nouveaux
+        destroyAllCharts();
+        
+        const coords = await getCoordinates();
+        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}&units=metric`;
+        const response = await fetch(forecastUrl);
+        const data = await response.json();
+
+        const timestamps = data.list.map(item => new Date(item.dt * 1000));
+        const temperatures = data.list.map(item => item.main.temp);
+        const humidity = data.list.map(item => item.main.humidity);
+        const windSpeed = data.list.map(item => item.wind.speed);
+
+        createTemperatureChart(timestamps, temperatures);
+        createHumidityChart(timestamps, humidity);
+        createWindSpeedChart(timestamps, windSpeed);
+        await createAQIChart(coords);
+    } catch (error) {
+        console.error('Error creation of graph:', error);
+    }
+}
+
+//-------------------------------------------- Function to update all data ---------------------------------------------------------------
+async function updateAllData() {
+    try {
+        await fetchData();
+        await fetchAirQualityData();
+        await getFiveDayForecast();
+        await createCharts();
+        await createEvolutionCharts();
+    } catch (error) {
+        console.error('Error updating data:', error);
+    }
+}
 
 // ---------------------------------------------------------- DOM CONTENT LOADED ---------------------------------------------------------------
 
@@ -369,26 +626,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link');
     const pages = document.querySelectorAll('.page');
 
-    navLinks.forEach(link => {
+    navLinks.forEach(link => { //for each link in the navLinks array
         link.addEventListener('click', (e) => {
-            e.preventDefault();
+            e.preventDefault(); //prevent the default action of the link (in this case, the link is not followed)
 
-            // Activer le lien sélectionné
-            navLinks.forEach(l => l.classList.remove('active'));
+            // Remove the active class from all links
+            navLinks.forEach(l => l.classList.remove('active')); 
+            // Add the active class to the clicked link
             link.classList.add('active');
 
-            // Afficher la page correspondante
-            pages.forEach(page => page.style.display = 'none');
-            const pageId = link.getAttribute('data-page');
-            document.getElementById(pageId).style.display = 'block';
+            // Display the corresponding page
+            pages.forEach(page => page.style.display = 'none'); //hide all pages
+            const pageId = link.getAttribute('data-page'); //get the data-page attribute of the clicked link
+            document.getElementById(pageId).style.display = 'block'; //display the corresponding page
 
-            // Réinitialiser les graphiques selon la page AFAIRE
+           
         });
-    
-    // ------------------------------ Search button -----------------------------
-    const searchBtn = document.getElementById('searchBtn');
-    const cityInput = document.getElementById('city_input');
-
     //------------------------- Function to update the city -------------------------
     function updateCity() {
         const newCity = cityInput.value.trim();
@@ -396,14 +649,15 @@ document.addEventListener('DOMContentLoaded', function() {
             currentCITY = newCity;
             console.log('Current City:',  currentCITY); //Check if the city is updated
             // Update data
-            fetchData();
-            fetchAirQualityData(); 
-            getFiveDayForecast(); 
-            createCharts(); 
+            updateAllData();
             // Update the city name
             document.getElementById('cityName').textContent = currentCITY;
         }
     }
+    
+    // ------------------------------ Search button -----------------------------
+    const searchBtn = document.getElementById('searchBtn');
+    const cityInput = document.getElementById('city_input');
 
     // When clicking on the search button
     searchBtn.addEventListener('click', updateCity);
@@ -416,15 +670,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     });
 
-    // Gestion des boutons de période
+    
     const periodBtns = document.querySelectorAll('.period-btn');
     periodBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             periodBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            //initCharts(btn.dataset.period);
+            createEvolutionCharts(btn.dataset.period);
         });
     });
+ 
     // --------------------- Get today's date ---------------------
     // Get today's date
     const today = new Date();
@@ -439,24 +694,48 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Display the date
     document.getElementById('date').textContent = dateString;
+
     // Initial call
     fetchData();
     fetchAirQualityData();
     getFiveDayForecast();
     createCharts();
+    createEvolutionCharts();
+    updateAllData();
 
 
     
 });
 
+//-------------------------------------------- Get User current location -------------------------------------------------------------
+
+document.getElementById("locationBtn").addEventListener("click", async()=>{
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log('Position actuelle:', latitude, longitude);
+            
+          
+            const response = await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+            const data = await response.json();
+            if (data.length > 0) {
+                currentCITY = data[0].name;   // Update the currentCITY with the user city
+                console.log('Current city:', currentCITY);
+                
+                // update data display and graph
+                await updateAllData();
+                document.getElementById('cityName').textContent = currentCITY; 
+            }
+        }, (error) => {
+            console.error('Error of localisation:', error);
+        });
+    } else {
+        console.error('The geolocalisation n\'is not support by this navigator.');
+    }
+});
 
 
-//------------------------------------------- EXECUTION ---------------------------------------------------------------
 
-
-// Update data every 5 minutes
-setInterval(fetchData, 300000);
-setInterval(fetchAirQualityData, 300000);
-setInterval(getFiveDayForecast, 300000);
-setInterval(createCharts, 300000);
+//---------------------------------- UPDATE DATA EVERY 5 MINUTES ---------------------------------------------------
+setInterval(updateAllData, 300000);
 
