@@ -18,7 +18,10 @@
     <link rel="stylesheet" href="styles.css">
 
     <!--Chart.js-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
     <!--Script-->
     <script type="module" src="script.js"></script>
 </head> 
@@ -27,17 +30,17 @@
 <body>
     <div class="container">
         <!---------------------------------------------------SLIDEBAR----------------------------------------------------------->
-        <nav class="sidebar">
+        <nav class="slidebar">
             <!------------------------USER PROFILE-------------------------->
             <div class="user-profile">
                 <img src="profile.png">
                 <div class="user-info">
                     <h3>Pauline ZHOU</h3>
-                    <small>Administrator</small>
+                    <small>Administrator</small> <!--small caracters-->
                 </div>
             </div>
             <hr><br> 
-            <!-----------------------NAVIGATION MENU------------------------->
+            <!-----------------------NAVIGATION BAR------------------------->
             <ul>
                 <li>
                     <a href="#" class="nav-link active" data-page="dashboard">
@@ -85,6 +88,8 @@
             </div>
 
             <!-------------------------------------------------- LEFT CONTENT ----------------------------------------------------------->
+            
+            <!-----------------------------------------------------HOME PAGE----------------------------------------------------------->
             <div class="page" id="dashboard">
                 <div class="weather-data">
                     <div class="weather-left">
@@ -277,7 +282,7 @@
             </div>
         </div>
 
-            <!-------------------------------------------------- Page Data ----------------------------------------------------------->
+        <!-------------------------------------------------- Page Data ----------------------------------------------------------->
           
         <div class="page" id="data">
             <div class="data-container">
@@ -316,12 +321,8 @@
             <!-------------------------------------------------- Page Evolution ----------------------------------------------------------->
             <div class="page" id="evolution">
                 <div class="evolution-container">
-                    <div class="period-selector">
-                        <button class="period-btn active" data-period="week">1 Week</button>
-                        <button class="period-btn" data-period="month">1 Month</button>
-                        <button class="period-btn" data-period="sixMonths">6 Months</button>
-                        <button class="period-btn" data-period="year">1 Year</button>
-                    </div>
+                    <h2>Evolution of Weather Data for the Next 5 Days</h2>
+                    <br><br>
                     
                     <div class="charts-grid">
                         <!----------------------Temperature Chart------------------------>
@@ -347,8 +348,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-------------------------------------------------- Page About ----------------------------------------------------------->
+            
+            
+<!-------------------------------------------------- Page About ----------------------------------------------------------->
           
 <div class="page" id="about">
     <div class="about-container">
@@ -410,14 +412,27 @@
         <div class="contact-section">
             <h2>Contact Us</h2>
             <div class="contact-info">
-                <p><i class="fas fa-envelope"></i> contact@weatherapp.com</p>
-                <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
-                <p><i class="fas fa-map-marker-alt"></i> Paris, France</p>
+                <p><i class="fas fa-envelope"></i> paulinezhou@esme.fr<p>
+                <p><i class="fas fa-phone"></i> +82 10 1234 5678</p>
+                <p><i class="fas fa-map-marker-alt"></i> Busan, South Korea</p>
             </div>
         </div>
     </div>
 </div>
 
-    <script src="script.js"></script>
+<!-------------------------------------------------- Footer ----------------------------------------------------------->
+<footer>
+    <p>© Weather App. All rights reserved.</p>
+    <ul class="footer-links">
+        <li><a href="https://chatgpt.com/" target="_blank">Chatgpt</a></li>
+        <li><a href="https://github.com" target="_blank">GitHub</a></li>
+        <li><a href="https://www.openweathermap.org" target="_blank">OpenWeather API</a></li>
+        <li><a href="https://www.youtube.com/watch?v=GARsvcSdtj8&list=PLSCiNE9DUnEIOnCjDPTIdhR-4Ztr5dX_0" target="_blank">Youtube</a></li>
+    </ul>
+</footer>
+
+<!-------------------------------------------------- Script----------------------------------------------------------->
+<script src="script.js"></script>
+
 </body>
 </html>
