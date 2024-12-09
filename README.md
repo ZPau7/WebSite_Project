@@ -26,7 +26,7 @@ This project is a web application wich displays real-time air quality data, weat
 
 If you want to see the website
 
-1. Demo link :
+1. Demo link : https://zpau7.github.io/WebSite_Project/
 2. Run the code by yourself (few steps to done)
 - download all files (index.html, styles.css, script.js, profile.png)
 - set up your API key from OpenWeather ( https://openweathermap.org/ )
